@@ -14,6 +14,21 @@ BOT_NAME = 'kampetorpmarin'
 SPIDER_MODULES = ['kampetorpmarin.spiders']
 NEWSPIDER_MODULE = 'kampetorpmarin.spiders'
 
+try:
+    from kampetorpmarin.localconfig import user, password
+    local = True
+    print("Success")
+except ImportError:
+    local = False
+    user = ''
+    password = ''
+    print("No local credentials found")
+
+
+LOG_LEVEL = "INFO"
+
+FTP_USER = user
+FTP_PASSWORD = password
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'kampetorpmarin (+http://www.yourdomain.com)'
@@ -64,9 +79,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'kampetorpmarin.pipelines.KampetorpmarinPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'kampetorpmarin.pipelines.KampetorpmarinPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
