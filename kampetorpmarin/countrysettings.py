@@ -4,7 +4,7 @@ countries = [
         "storeid": "813",
         "currency": "SEK",
         "countrycode": "SE",
-        "url": "https://kampetorpmarin.se/"
+        "url": "https://kampetorpmarin.se/se/"
     },
     {
         "storename": "Kampetorp Marin & Fritid",
