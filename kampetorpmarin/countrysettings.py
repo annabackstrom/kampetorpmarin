@@ -11,6 +11,6 @@ countries = [
         "storeid": "832",
         "currency": "DKK",
         "countrycode": "DK",
-        "url": "https://kampetorpmarin.se/"
+        "url": "https://kampetorpmarin.com/dk/"
     }
 ]
