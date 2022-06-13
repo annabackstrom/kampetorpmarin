@@ -24,13 +24,16 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
         pass
 
     def parsemainpage(self, response: scrapy.http.Response, countryinfo: dict):
-        rawdata = response.xpath('//section[@class="ammenu-menu-wrapper"]/@data-bind').get()
-        jsonbody = json.loads(re.findall(r'data: (.*?), config:', rawdata)[0])
+        #rawdata = response.xpath('//section[@class="ammenu-menu-wrapper"]/@data-bind').get()
+        #jsonbody = json.loads(re.findall(r'data: (.*?), config:', rawdata)[0])
 
-        for menuitem in jsonbody['elems']:
+        for menuitem in response.xpath('//li[@class[contains(., "level0")]]'):
             maincat = ScrapedCategory()
-            maincat['name'] = menuitem['name']
-            maincat['url'] = menuitem['url']
+            maincat['name'] = ''.join(menuitem.xpath('a/span/text()').extract())
+            try:
+                maincat['url'] = response.urljoin(menuitem.xpath('a/@href').get())
+            except TypeError:
+                continue
             maincat['platformcategoryid'] = self.createidfromstring(maincat['url'])
             maincat['level'] = 1
             maincat['agegroup'] = "adult"
@@ -49,10 +52,10 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
                 }
             )
 
-            for subcatitem in menuitem['elems']:
+            for subcatitem in menuitem.xpath('ul/li'):
                 subcat = ScrapedCategory()
-                subcat['name'] = subcatitem['name']
-                subcat['url'] = subcatitem['url']
+                subcat['name'] = ''.join(subcatitem.xpath('a/span/text()').extract())
+                subcat['url'] = response.urljoin(subcatitem.xpath('a/@href').get())
                 subcat['platformcategoryid'] = self.createidfromstring(subcat['url'])
                 subcat['level'] = 2
                 subcat['agegroup'] = "adult"
@@ -71,10 +74,10 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
                     }
                 )
 
-                for subsubcatitem in subcatitem['elems']:
+                for subsubcatitem in subcatitem.xpath('ul/li'):
                     subsubcat = ScrapedCategory()
-                    subsubcat['name'] = subsubcatitem['name']
-                    subsubcat['url'] = subsubcatitem['url']
+                    subsubcat['name'] = ''.join(subsubcatitem.xpath('a/span/text()').extract())
+                    subsubcat['url'] = response.urljoin(subsubcatitem.xpath('a/@href').get())
                     subsubcat['platformcategoryid'] = self.createidfromstring(subsubcat['url'])
                     subsubcat['level'] = 3
                     subsubcat['agegroup'] = "adult"
