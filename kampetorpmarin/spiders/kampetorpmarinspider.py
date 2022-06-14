@@ -120,7 +120,10 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
                      additionalcats: list,
                      countryinfo: dict):
         oneprod = ScrapedProduct()
-        oneprod['name'] = response.xpath('//h1/span/text()').get()
+        try:
+            oneprod['name'] = response.xpath('//h1/span/text()').get()
+        except TypeError:
+            return
         if oneprod['name'] is None:
             return
         oneprod['url'] = response.url
