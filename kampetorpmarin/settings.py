@@ -31,7 +31,7 @@ FTP_USER = user
 FTP_PASSWORD = password
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'kampetorpmarin (+http://www.yourdomain.com)'
+USER_AGENT = 'Amanda AI (+https://www.amandaai.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
