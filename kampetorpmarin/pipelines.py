@@ -15,10 +15,22 @@ class KampetorpmarinPipeline(object):
                                                "categories": []}
 
         if isinstance(item, ScrapedCategory):
+            try:
+                item.validate()
+            except (AssertionError, ValueError) as err:
+                print(f"Error validating {item}: {err.args[0]}")
             if [x['name'] for x in self.countryproperties[storeid]['categories']].count(item['name']) >= 5:
-                return
+                return item
+            if item in self.countryproperties[storeid]['categories']:
+                return item
             self.countryproperties[storeid]['categories'].append(item)
         if isinstance(item, ScrapedProduct):
+            try:
+                item.validate()
+            except (AssertionError, ValueError) as err:
+                print(f"Error validating {item}: {err.args[0]}")
+            if "corona" in item['name'].lower() or "covid" in item['name'].lower():
+                return item
             self.productcount += 1
             existingproducts = finditemsinlistwithbisect(itemlist=self.countryproperties[storeid]['products'],
                                                          attrname="identifier",
@@ -55,6 +67,10 @@ class KampetorpmarinPipeline(object):
             if countryinfo is None:
                 print("Could not find countryinfo for store with id {}".format(key))
                 continue
+            for product in value['products']:
+                product.validate()
+            for category in value['categories']:
+                category.validate()
             wrapper.postproductsandcategories(storename=countryinfo['storename'],
                                               storeid=key,
                                               productsandcategories={

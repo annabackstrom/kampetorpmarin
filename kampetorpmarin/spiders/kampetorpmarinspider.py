@@ -124,7 +124,7 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
             oneprod['name'] = response.xpath('//h1/span/text()').get()
         except TypeError:
             return
-        if oneprod['name'] is None:
+        if not oneprod['name']:
             return
         oneprod['url'] = response.url
         oneprod['platformproductid'] = self.createidfromstring(oneprod['url'])
@@ -135,7 +135,8 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
 
         oldprice = response.xpath('//span[@data-price-type="oldPrice"]/@data-price-amount').get()
         finalprice = response.xpath('//span[@data-price-type="finalPrice"]/@data-price-amount').get()
-
+        if not finalprice:
+            return
         if oldprice:
             oneprod['price'] = oldprice
             oneprod['saleprice'] = finalprice
@@ -143,7 +144,7 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
             oneprod['price'] = finalprice
             oneprod['saleprice'] = None
 
-        oneprod['brand'] = ""
+        oneprod['brand'] = " "
         oneprod['gender'] = "unisex"
         oneprod['agegroup'] = "adult"
         oneprod['gtin'] = [None]
@@ -154,8 +155,13 @@ class KampetorpmarinspiderSpider(scrapy.Spider):
         oneprod['additionalcategoryids'] = [x['platformcategoryid'] for x in additionalcats]
         oneprod['storeid'] = countryinfo['storeid']
         oneprod['mpn'] = response.xpath('//div[@itemprop="sku"]/text()').get()
-        oneprod['name'] = oneprod['name'].replace(oneprod['mpn'], "").strip()
+        if not oneprod['mpn']:
+            return
+        if oneprod['name'].strip() != oneprod['mpn'].strip():
+            oneprod['name'] = oneprod['name'].replace(oneprod['mpn'], "").strip()
         oneprod['platformcategoryid'] = cat['platformcategoryid']
+
+
 
         yield oneprod
 
